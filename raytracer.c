@@ -175,6 +175,10 @@ void save_imageP3(int Width, int Height, char* fname,unsigned char* pixels) {
 	}
 	fclose(fp);
 }
+
+
+
+
 /**
 // This main function is meant only to illustrate how to use the save_imageXX functions.
 // You should get rid of this code, and just paste the save_imageXX functions into your
