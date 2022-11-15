@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "raytracer.h"
 
 // Output in P6 format, a binary file containing:
 // P6
@@ -174,6 +177,173 @@ void save_imageP3(int Width, int Height, char* fname,unsigned char* pixels) {
 		fprintf(fp,"\n") ;
 	}
 	fclose(fp);
+}
+int main(int argc , char* argv[]){
+  float near;
+  float left;
+  float right;
+  float bottom;
+  float top;
+  int res[2];
+  float background[3];
+  float ambient[3];
+  char output_name[20];
+  struct sphere spheres[14]; //array of sphere struct
+  int sphere_counter = 0; //number of spheres given by the file
+  struct light lights[9]; //array of light struct
+  int light_counter = 0; //number of lights given by the file
+
+  FILE* fp = fopen(argv[1] , "r");
+  if(fp == NULL){
+    perror("failed to open file");
+    exit(1);
+  }
+  // ** READ INPUT FROM FILE **
+  // strtok tokenizes the line by detected white space 
+  // goes through if else statement to detect which keyword it is to seperate the informations
+  char buffer[255];
+  while(fgets(buffer, sizeof(buffer) , fp)){
+    char* piece = strtok(buffer, " ");
+
+    if(strcmp(piece , "NEAR") == 0){
+
+      piece = strtok(NULL, " ");
+      near = strtof(piece ,NULL);
+
+    }else if(strcmp(piece, "LEFT") == 0){
+
+      piece = strtok(NULL , " ");
+      left = strtof(piece , NULL);
+
+    }else if(strcmp(piece , "RIGHT") == 0){
+
+      piece = strtok(NULL , " ");
+      right = strtof(piece , NULL);
+
+    }else if (strcmp(piece , "BOTTOM") == 0){
+
+      piece = strtok(NULL , " ");
+      bottom = strtof(piece , NULL);
+
+    }else if(strcmp(piece , "TOP") == 0){
+      
+      piece = strtok(NULL , " ");
+      top = strtof(piece , NULL);
+
+    }else if(strcmp(piece , "RES")== 0){
+
+      for(int i = 0; i < 2; i++){
+        piece = strtok(NULL , " ");
+        res[i] = strtod(piece , NULL);
+      }
+     
+    }else if(strcmp(piece , "SPHERE") == 0){
+      int pos_counter = 0;
+      int scale_counter = 0;
+      int color_counter = 0;
+      int k_counter = 0;
+
+      for(int i = 0; i < 15; i++){
+        piece = strtok(NULL , " ");
+        if(i == 0){
+          //name
+          strcpy(spheres[sphere_counter].name , piece);
+
+        }else if(i > 0 && i <= 3){
+          //3 position values
+          spheres[sphere_counter].position[pos_counter] = strtof(piece , NULL);
+          pos_counter++;
+
+        }else if(i > 3 && i <= 6){
+          //3 scale factors
+          spheres[sphere_counter].scale[scale_counter] = strtof(piece , NULL);
+          scale_counter++;
+
+        }else if(i > 6 && i <= 9){
+          //3 color factors
+          spheres[sphere_counter].color[color_counter] = strtof(piece , NULL);
+          color_counter++;
+
+        }else if(i > 9 && i <= 13){
+          //4 k coefficents
+          spheres[sphere_counter].k[k_counter] = strtof(piece ,NULL);
+          k_counter++;
+
+        }else if(i == 14){
+          //n exp value
+          spheres[sphere_counter].n = strtod(piece , NULL);
+
+        }
+      }
+       sphere_counter++;
+
+    }else if(strcmp(piece , "LIGHT") == 0){
+      int lpos_counter = 0;
+      int intensity_counter = 0;
+
+      for(int j = 0; j < 7; j++){
+        piece = strtok(NULL , " ");
+        if(j == 0){
+          //name
+          strcpy(lights[light_counter].name , piece);
+
+        }else if(j > 0 && j <= 3){
+          //3 position values
+          lights[light_counter].postition[lpos_counter] = strtof(piece , NULL);
+          lpos_counter++;
+
+        }else if(j > 3 && j <= 6){
+          //3 intensity factors
+          lights[light_counter].intensity[intensity_counter] = strtof(piece, NULL);
+          intensity_counter++;
+
+        }
+      }
+      light_counter++;
+
+    }else if(strcmp(piece , "BACK") == 0){
+      for(int i = 0; i < 3; i++){
+        //3 background values
+        piece = strtok(NULL , " ");
+        background[i] = strtof(piece , NULL);
+      }
+    }else if(strcmp(piece , "AMBIENT") == 0){
+      for(int i = 0; i < 3; i++){
+        //3 ambient factors
+        piece = strtok(NULL , " ");
+        ambient[i] = strtof(piece , NULL); 
+      }
+    }else if(strcmp(piece,"OUTPUT") == 0){
+      //output file name
+      piece = strtok(NULL , " ");
+      strcpy(output_name , piece);
+    }
+  }
+  fclose(fp);
+  // ** END OF READING FROM FILE **
+
+  // ** TESTING THE READING **
+  printf("NEAR %f\n LEFT %f\n RIGHT %f\n BOTTOM %f\n TOP %f\n RES %d %d\n", near,left,right,bottom,top,res[0],res[1]);
+  for(int i = 0; i < sphere_counter; i++){
+    printf("%s %f %f %f %f %f %f %f %f %f %f %f %f %f %d\n" , spheres[i].name , spheres[i].position[0], spheres[i].position[1] , spheres[i].position[2] ,
+    spheres[i].scale[0] , spheres[i].scale[1] , spheres[i].scale[2] , spheres[i].color[0], spheres[i].color[1], spheres[i].color[2]
+    , spheres[i].k[0],  spheres[i].k[1],spheres[i].k[2],spheres[i].k[3], spheres[i].n);
+  }
+  
+  for(int i = 0; i < light_counter; i++){
+    printf("%s %f %f %f %f %f %f\n", lights[i].name,lights[i].postition[0], lights[i].postition[1], lights[i].postition[2] , lights[i].intensity[0],
+    lights[i].intensity[1],lights[i].intensity[2]);
+  }
+  printf("background %f %f %f\n" , background[0] , background[1], background[2]);
+  printf("ambient %f %f %f\n" , ambient[0], ambient[1], ambient[2]);
+  printf("OUTPUT NAME %s" , output_name);
+  // ** END OF TESTING READING ** you can comment this out its for my own tester and also to make sure i dont make weird mistakes...
+  // to run , gcc - o raytracer raytracer.c 
+  // then , raytracer.exe testAmbient.txt
+  // header file contains the struct
+
+  return 0;
+
 }
 
 
