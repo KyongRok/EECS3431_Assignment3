@@ -192,6 +192,7 @@ int main(int argc , char* argv[]){
   int sphere_counter = 0; //number of spheres given by the file
   struct light lights[9]; //array of light struct
   int light_counter = 0; //number of lights given by the file
+  
 
   FILE* fp = fopen(argv[1] , "r");
   if(fp == NULL){
@@ -320,58 +321,23 @@ int main(int argc , char* argv[]){
     }
   }
   fclose(fp);
-  // ** END OF READING FROM FILE **
-
-  // ** TESTING THE READING **
-  printf("NEAR %f\n LEFT %f\n RIGHT %f\n BOTTOM %f\n TOP %f\n RES %d %d\n", near,left,right,bottom,top,res[0],res[1]);
-  for(int i = 0; i < sphere_counter; i++){
-    printf("%s %f %f %f %f %f %f %f %f %f %f %f %f %f %d\n" , spheres[i].name , spheres[i].position[0], spheres[i].position[1] , spheres[i].position[2] ,
-    spheres[i].scale[0] , spheres[i].scale[1] , spheres[i].scale[2] , spheres[i].color[0], spheres[i].color[1], spheres[i].color[2]
-    , spheres[i].k[0],  spheres[i].k[1],spheres[i].k[2],spheres[i].k[3], spheres[i].n);
-  }
+  unsigned char* pixles;
+  unsigned char px[3*res[0]*res[1]];
+  pixles = px;
   
-  for(int i = 0; i < light_counter; i++){
-    printf("%s %f %f %f %f %f %f\n", lights[i].name,lights[i].postition[0], lights[i].postition[1], lights[i].postition[2] , lights[i].intensity[0],
-    lights[i].intensity[1],lights[i].intensity[2]);
-  }
-  printf("background %f %f %f\n" , background[0] , background[1], background[2]);
-  printf("ambient %f %f %f\n" , ambient[0], ambient[1], ambient[2]);
-  printf("OUTPUT NAME %s" , output_name);
-  // ** END OF TESTING READING ** you can comment this out its for my own tester and also to make sure i dont make weird mistakes...
-  // to run , gcc - o raytracer raytracer.c 
-  // then , raytracer.exe testAmbient.txt
-  // header file contains the struct
-
-  int Width = 128;	// Move these to your setup function. The actual resolution will be
-	int Height= 128;	// specified in the input file
-    char fname3[20] = "sceneP3.ppm"; //This should be set based on the input file
-	char fname6[20] = "sceneP6.ppm"; //This should be set based on the input file
-	unsigned char *pixels;
-	// This will be your image. Note that pixels[0] is the top left of the image and
-	// pixels[3*Width*Height-1] is the bottom right of the image.
-    unsigned char px[3*Width*Height];
-    pixels = px;
-
-	// This loop just creates a gradient for illustration purposes only. You will not use it.
-	float scale = 128.0 / (float) Width ;
-	int k = 0 ;
-	for(int i = 0; i < Height; i++) {
-		for (int j = 0; j < Width; j++) {
-			int c = (i+j)*scale ;
-			pixels[k] = c;
-			pixels[k+1] = c;
-			pixels[k+2] = c;
-			k = k + 3 ;
-		}
-	}
-	save_imageP3(Width, Height, fname3, pixels);
-	save_imageP6(Width, Height, fname6, pixels);
-
-  return 0;
-
+  create_background(&pixles ,background , res[0],res[1]);
+  save_imageP3(res[0],res[1],output_name,pixles);
 }
 
-
+void create_background(unsigned char** pixles , float background[], int width,int height){
+  unsigned char* temp_pixles = *pixles;
+  for(int i = 0; i < 3*width*height;){
+    temp_pixles[i] = (background[0]) * 255;
+    temp_pixles[i+1] =  (background[1]) * 255;
+    temp_pixles[i+2] = (background[2]) * 255;
+    i = i + 3;
+  }
+}
 
 
 /**
@@ -405,3 +371,25 @@ int main() {
 	save_imageP6(Width, Height, fname6, pixels);
 }
 **/
+
+// ** END OF READING FROM FILE **
+
+  // ** TESTING THE READING **
+  // printf("NEAR %f\n LEFT %f\n RIGHT %f\n BOTTOM %f\n TOP %f\n RES %d %d\n", near,left,right,bottom,top,res[0],res[1]);
+  // for(int i = 0; i < sphere_counter; i++){
+  //   printf("%s %f %f %f %f %f %f %f %f %f %f %f %f %f %d\n" , spheres[i].name , spheres[i].position[0], spheres[i].position[1] , spheres[i].position[2] ,
+  //   spheres[i].scale[0] , spheres[i].scale[1] , spheres[i].scale[2] , spheres[i].color[0], spheres[i].color[1], spheres[i].color[2]
+  //   , spheres[i].k[0],  spheres[i].k[1],spheres[i].k[2],spheres[i].k[3], spheres[i].n);
+  // }
+  
+  // for(int i = 0; i < light_counter; i++){
+  //   printf("%s %f %f %f %f %f %f\n", lights[i].name,lights[i].postition[0], lights[i].postition[1], lights[i].postition[2] , lights[i].intensity[0],
+  //   lights[i].intensity[1],lights[i].intensity[2]);
+  // }
+  // printf("background %f %f %f\n" , background[0] , background[1], background[2]);
+  // printf("ambient %f %f %f\n" , ambient[0], ambient[1], ambient[2]);
+  // printf("OUTPUT NAME %s" , output_name);
+  // ** END OF TESTING READING ** you can comment this out its for my own tester and also to make sure i dont make weird mistakes...
+  // to run , gcc - o raytracer raytracer.c 
+  // then , raytracer.exe testAmbient.txt
+  // header file contains the struct
