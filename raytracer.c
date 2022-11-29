@@ -7,6 +7,7 @@
 #include <math.h>
 #include "raytracer.h"
 #include "vector.h"
+#include "ray.h"
 
 // Output in P6 format, a binary file containing:
 // P6
@@ -202,6 +203,13 @@ vec* unitVec(float x1, float y1,float z1){
   result->x = x1/sqrt(x1*x1 + y1*y1+ z1*z1);
   result->y = y1/sqrt(x1*x1 + y1*y1+ z1*z1);
   result->z = z1/sqrt(x1*x1 + y1*y1+ z1*z1);
+  return result;
+}
+point* at(ray* r, float t){
+  point * result = (point*) malloc(sizeof(point));
+  result->x = r->origin->x + t*(r->direction->x);
+  result->y = r->origin->y + t*(r->direction->y);
+  result->z = r->origin->z + t*(r->direction->z);
   return result;
 }
 

@@ -27,5 +27,9 @@
     "**/.*/**",
     "**/.vscode",
     "**/.vscode/**"
-  ]
+  ],
+  "files.associations": {
+    "vector.h": "c",
+    "raytracer.h": "c"
+  }
 }
