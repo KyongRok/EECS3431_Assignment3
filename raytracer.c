@@ -1,7 +1,12 @@
+// ** YORK UNIVERSITY EECS3431 Assignment3 **
+// Group Members: KyongRok Kim - 215813413 , Arian Quader - 218070607
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "raytracer.h"
+#include "vector.h"
 
 // Output in P6 format, a binary file containing:
 // P6
@@ -178,6 +183,28 @@ void save_imageP3(int Width, int Height, char* fname,unsigned char* pixels) {
 	}
 	fclose(fp);
 }
+
+float dotProduct(float x1, float y1,float z1, float x2, float y2, float z2){
+  return x1*x2 + y1*y2 + z1*z2;
+}
+float vecLength(float x1, float y1,float z1){
+  return sqrt(x1*x1 + y1*y1+ z1*z1);
+}
+vec* crossProduct(float x1, float y1,float z1, float x2, float y2, float z2){
+  vec * result = (vec*) malloc(sizeof(vec));
+  result->x = y1*z2 - z1*y2;
+  result->y = z1*x2 - x1*z2;
+  result->z = x1*y2 - y1*x2;
+  return result;
+}
+vec* unitVec(float x1, float y1,float z1){
+  vec * result = (vec*) malloc(sizeof(vec));
+  result->x = x1/sqrt(x1*x1 + y1*y1+ z1*z1);
+  result->y = y1/sqrt(x1*x1 + y1*y1+ z1*z1);
+  result->z = z1/sqrt(x1*x1 + y1*y1+ z1*z1);
+  return result;
+}
+
 int main(int argc , char* argv[]){
   float near;
   float left;
@@ -321,16 +348,17 @@ int main(int argc , char* argv[]){
     }
   }
   fclose(fp);
-  unsigned char* pixles;
+
+  unsigned char* pixels;
   unsigned char px[3*res[0]*res[1]];
-  pixles = px;
+  pixels = px;
   
-  create_background(&pixles ,background , res[0],res[1]);
-  save_imageP3(res[0],res[1],output_name,pixles);
+  create_background(&pixels, background, res[0], res[1]);
+  save_imageP3(res[0], res[1], output_name, pixels);
 }
 
-void create_background(unsigned char** pixles , float background[], int width,int height){
-  unsigned char* temp_pixles = *pixles;
+void create_background(unsigned char** pixels , float background[], int width,int height){
+  unsigned char* temp_pixles = *pixels;
   for(int i = 0; i < 3*width*height;){
     temp_pixles[i] = (background[0]) * 255;
     temp_pixles[i+1] =  (background[1]) * 255;

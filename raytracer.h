@@ -1,5 +1,5 @@
 // ** YORK UNIVERSITY EECS3431 Assignment3 **
-// Group Members: KyongRok Kim - 215813413 , Arian Quader - 
+// Group Members: KyongRok Kim - 215813413 , Arian Quader - 218070607 
 void create_background(unsigned char** pixles , float background[],int width,int height);
 
 struct sphere{
