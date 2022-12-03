@@ -373,7 +373,7 @@ int main(int argc , char* argv[]){
   pixels = px;
 
   float aspectRatio = res[0]/res[1];
-  float viewportHeight = 2.0;
+  float viewportHeight = res[1];
   float viewportWidth = aspectRatio * viewportHeight;
   float focal = 1.0;
 
