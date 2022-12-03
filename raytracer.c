@@ -389,6 +389,10 @@ int main(int argc , char* argv[]){
   }
   fclose(fp);
 
+  spheres[0].position[0] = 0;
+  spheres[0].position[1] = 0;
+  spheres[0].position[2] = -1;
+
   unsigned char* pixels;
   unsigned char px[3*res[0]*res[1]];
   pixels = px;
