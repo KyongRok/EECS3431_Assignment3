@@ -200,9 +200,9 @@ vec* crossProduct(float x1, float y1,float z1, float x2, float y2, float z2){
 }
 vec* unitVec(float x1, float y1,float z1){
   vec * result = (vec*) malloc(sizeof(vec));
-  result->x = x1/sqrt(x1*x1 + y1*y1+ z1*z1);
-  result->y = y1/sqrt(x1*x1 + y1*y1+ z1*z1);
-  result->z = z1/sqrt(x1*x1 + y1*y1+ z1*z1);
+  result->x = x1/vecLength(x1, y1, z1);
+  result->y = y1/vecLength(x1, y1, z1);
+  result->z = z1/vecLength(x1, y1, z1);
   return result;
 }
 point* at(ray* r, float t){
@@ -218,11 +218,11 @@ float hitSphere(point* center, float radius, ray* r) {
   float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
   float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
   float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
-  float discriminant = b*b - 4*a*c;
-  if (discriminant < 0) {
+  float disc = b*b - 4*a*c;
+  if (disc < 0) {
     return -1.0;
   } else {
-    return (-b - sqrt(discriminant) ) / (2.0*a);
+    return (-b-sqrt(disc))/(2.0*a);
   }
 }
 
@@ -407,9 +407,9 @@ int main(int argc , char* argv[]){
   vec horizontal = {viewportWidth, 0, 0};
   vec vertical = {0, viewportHeight, 0};
   vec lowerLeft;
-  lowerLeft.x = origin.x - horizontal.x/2.0 - vertical.x/2.0 - 0.0;
-  lowerLeft.y = origin.y - horizontal.y/2.0 - vertical.y/2.0 - 0.0;
-  lowerLeft.z = origin.z - horizontal.z/2.0 - vertical.z/2.0 - focal;
+  lowerLeft.x = origin.x - horizontal.x/2 - vertical.x/2 - 0;
+  lowerLeft.y = origin.y - horizontal.y/2 - vertical.y/2 - 0;
+  lowerLeft.z = origin.z - horizontal.z/2 - vertical.z/2 - focal;
 
   int k = 0;
   for (int j = res[1]-1; j >= 0; --j) {
