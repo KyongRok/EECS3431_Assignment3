@@ -213,27 +213,35 @@ point* at(ray* r, float t){
   return result;
 }
 
-int hitSphere(point* center, float radius, ray* r) {
+float hitSphere(point* center, float radius, ray* r) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
   float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
   float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
   float discriminant = b*b - 4*a*c;
-  return (discriminant > 0.0);
+  if (discriminant < 0) {
+    return -1.0;
+  } else {
+    return (-b - sqrt(discriminant) ) / (2.0*a);
+  }
 }
 
 color* rayColor(ray* r){
-  color * result = (color*) malloc(sizeof(color));
+  color* result = (color*) malloc(sizeof(color));
   point spherePoint = {0, 0, -1};
-  if (hitSphere(&spherePoint, 0.5, r)){
-    result->x = 1;
-    result->y = 0;
-    result->z = 0;
+  float t = hitSphere(&spherePoint, 0.5, r);
+  if (t > 0.0){
+    point* rayAt = at(r, t);
+    vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
+
+    result->x = 0.5* N->x+1;
+    result->y = 0.5* N->x+1;
+    result->z = 0.5* N->x+1;
     return result;
   }
   vec * unitDir = (vec*) malloc(sizeof(vec));
   unitDir = unitVec(r->direction->x, r->direction->y, r->direction->z);
-  float t = 0.5*(unitDir->y + 1.0);
+  t = 0.5*(unitDir->y + 1.0);
   result->x = (1.0-t)*1.0 - t*0.5;
   result->y = (1.0-t)*1.0 - t*0.7;
   result->z = (1.0-t)*1.0 - t*1.0;
