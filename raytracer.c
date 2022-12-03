@@ -213,6 +213,15 @@ point* at(ray* r, float t){
   return result;
 }
 
+int hitSphere(point* center, float radius, ray* r) {
+  vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
+  float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
+  float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
+  float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
+  float discriminant = b*b - 4*a*c;
+  return (discriminant > 0.0);
+}
+
 color* rayColor(ray* r){
   color * result = (color*) malloc(sizeof(color));
   point spherePoint = {0, 0, -1};
@@ -229,15 +238,6 @@ color* rayColor(ray* r){
   result->y = (1.0-t)*1.0 - t*0.7;
   result->z = (1.0-t)*1.0 - t*1.0;
   return result;
-}
-
-int hitSphere(point* center, float radius, ray* r) {
-  vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
-  float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
-  float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
-  float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
-  float discriminant = b*b - 4*a*c;
-  return (discriminant > 0.0);
 }
 
 int main(int argc , char* argv[]){
@@ -388,8 +388,10 @@ int main(int argc , char* argv[]){
   unsigned char px[3*res[0]*res[1]];
   pixels = px;
 
-  float aspectRatio = (float)(res[0])/(res[1]);
-  float viewportHeight = (float)res[1];
+  float aspectRatio = 16.0/9.0;
+  res[0] = 400;
+  res[1] = (float)(res[0])/aspectRatio;
+  float viewportHeight = 2.0;
   float viewportWidth = aspectRatio * viewportHeight;
   float focal = 1.0;
 
@@ -404,17 +406,17 @@ int main(int argc , char* argv[]){
   int k = 0;
   for (int j = res[1]-1; j >= 0; --j) {
     for (int i = 0; i < res[0]; ++i) {
-      float u = (float)(i) / (res[0]-1.0);
-      float v = (float)(j) / (res[1]-1.0);
+      float u = (float)(i) / (res[0]-1);
+      float v = (float)(j) / (res[1]-1);
       vec dir;
       dir.x = lowerLeft.x + u*horizontal.x + v*vertical.x - origin.x;
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
       color* pixel = rayColor(&r);
-      pixels[k] = pixel->x * 255;
-      pixels[k+1] = pixel->y * 255;
-      pixels[k+2] = pixel->z * 255;
+      pixels[k] = pixel->x * 255.0;
+      pixels[k+1] = pixel->y * 255.0;
+      pixels[k+2] = pixel->z * 255.0;
       k = k + 3;
     }
   }
