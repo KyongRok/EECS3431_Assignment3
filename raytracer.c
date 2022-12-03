@@ -375,7 +375,7 @@ int main(int argc , char* argv[]){
   float aspectRatio = res[0]/res[1];
   float viewportHeight = res[1];
   float viewportWidth = aspectRatio * viewportHeight;
-  float focal = 1.0;
+  float focal = 1.2;
 
   point origin = {0.0, 0.0, 0.0};
   vec horizontal = {viewportWidth, 0, 0};
@@ -397,7 +397,7 @@ int main(int argc , char* argv[]){
       ray r = {&origin, &dir};
       color* pixel = rayColor(&r);
       pixels[k] = pixel->x * 255;
-      pixels[k+1] =  pixel->y * 255;
+      pixels[k+1] = pixel->y * 255;
       pixels[k+2] = pixel->z * 255;
       k = k + 3;
     }
