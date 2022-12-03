@@ -242,9 +242,9 @@ color* rayColor(ray* r){
   vec * unitDir = (vec*) malloc(sizeof(vec));
   unitDir = unitVec(r->direction->x, r->direction->y, r->direction->z);
   t = 0.5*(unitDir->y + 1.0);
-  result->x = (1.0-t)*1.0 - t*0.5;
-  result->y = (1.0-t)*1.0 - t*0.7;
-  result->z = (1.0-t)*1.0 - t*1.0;
+  result->x = (1.0-t)*1.0 + t*0.5;
+  result->y = (1.0-t)*1.0 + t*0.7;
+  result->z = (1.0-t)*1.0 + t*1.0;
   return result;
 }
 
