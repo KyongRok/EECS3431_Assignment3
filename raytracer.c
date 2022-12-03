@@ -229,8 +229,19 @@ float hitSphere(point* center, float radius, ray* r) {
 color* rayColor(ray* r, float background[]){
   color* result = (color*) malloc(sizeof(color));
   point spherePoint = {0, 0, -1};
+  point spherePoint2 = {0, 1, -1};
   float t = hitSphere(&spherePoint, 0.5, r);
+  float f = hitSphere(&spherePoint2, 0.25, r);
   if (t > 0.0){
+    point* rayAt = at(r, t);
+    vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
+
+    result->x = 0.5* (N->x+1);
+    result->y = 0.5* (N->x+1);
+    result->z = 0.5* (N->x+1);
+    return result;
+  }
+  if (f > 0.0){
     point* rayAt = at(r, t);
     vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
 
