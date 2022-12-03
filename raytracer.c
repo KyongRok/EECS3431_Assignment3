@@ -213,6 +213,17 @@ point* at(ray* r, float t){
   return result;
 }
 
+color* rayColor(ray* r){
+  vec * unitDir = (vec*) malloc(sizeof(vec));
+  unitDir = unitVec(r->direction->x, r->direction->y, r->direction->z);
+  float t = 0.5*(unitDir->y + 1.0);
+  color * result = (color*) malloc(sizeof(color));
+  result->x = (1.0-t)*1.0 - t*0.5;
+  result->y = (1.0-t)*1.0 - t*0.7;
+  result->z = (1.0-t)*1.0 - t*1.0;
+  return result;
+}
+
 int main(int argc , char* argv[]){
   float near;
   float left;
@@ -360,8 +371,38 @@ int main(int argc , char* argv[]){
   unsigned char* pixels;
   unsigned char px[3*res[0]*res[1]];
   pixels = px;
+
+  float aspectRatio = res[0]/res[1];
+  float viewportHeight = 2.0;
+  float viewportWidth = aspectRatio * viewportHeight;
+  float focal = 1.0;
+
+  point origin = {0.0, 0.0, 0.0};
+  vec horizontal = {viewportWidth, 0, 0};
+  vec vertical = {0, viewportHeight, 0};
+  vec lowerLeft;
+  lowerLeft.x = origin.x - horizontal.x/2 - vertical.x/2 - 0;
+  lowerLeft.y = origin.y - horizontal.y/2 - vertical.y/2 - 0;
+  lowerLeft.z = origin.z - horizontal.z/2 - vertical.z/2 - focal;
+
+  for (int j = res[1]-1; j >= 0; --j) {
+    for (int i = 0; i < res[0]; ++i) {
+      float u = (float)(i) / (res[0]-1);
+      float v = (float)(j) / (res[1]-1);
+      vec dir;
+      dir.x = lowerLeft.x + u*horizontal.x + v*vertical.x - origin.x;
+      dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
+      dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
+      ray r = {&origin, &dir};
+      color* pixel = rayColor(&r);
+      pixels[i] = pixel->x * 255;
+      pixels[i+1] =  pixel->y * 255;
+      pixels[i+2] = pixel->z * 255;
+      i = i + 3;
+    }
+  }
   
-  create_background(&pixels, background, res[0], res[1]);
+  //create_background(&pixels, background, res[0], res[1]);
   save_imageP3(res[0], res[1], output_name, pixels);
 }
 
