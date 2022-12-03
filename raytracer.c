@@ -242,7 +242,7 @@ color* rayColor(ray* r, float background[]){
     return result;
   }
   if (f > 0.0){
-    point* rayAt = at(r, t);
+    point* rayAt = at(r, f);
     vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
 
     result->x = 0.5* (N->x+1);
