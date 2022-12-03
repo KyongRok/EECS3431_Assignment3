@@ -226,7 +226,7 @@ float hitSphere(point* center, float radius, ray* r) {
   }
 }
 
-color* rayColor(ray* r){
+color* rayColor(ray* r, float background[]){
   color* result = (color*) malloc(sizeof(color));
   point spherePoint = {0, 0, -1};
   float t = hitSphere(&spherePoint, 0.5, r);
@@ -239,12 +239,9 @@ color* rayColor(ray* r){
     result->z = 0.5* (N->x+1);
     return result;
   }
-  vec * unitDir = (vec*) malloc(sizeof(vec));
-  unitDir = unitVec(r->direction->x, r->direction->y, r->direction->z);
-  t = 0.5*(unitDir->y + 1.0);
-  result->x = (1.0-t)*1.0 + t*0.5;
-  result->y = (1.0-t)*1.0 + t*0.7;
-  result->z = (1.0-t)*1.0 + t*1.0;
+  result->x = background[0];
+  result->y = background[1];
+  result->z = background[2];
   return result;
 }
 
