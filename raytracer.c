@@ -226,28 +226,17 @@ float hitSphere(point* center, float radius, ray* r) {
   }
 }
 
-color* rayColor(ray* r, float background[]){
+color* rayColor(ray* r, float background[], struct sphere spheres[]){
   color* result = (color*) malloc(sizeof(color));
-  point spherePoint = {0, 0, -1};
-  point spherePoint2 = {0, 1, -1};
+  point spherePoint = {spheres[0].position[0], spheres[0].position[1], spheres[0].position[2]};
   float t = hitSphere(&spherePoint, 0.5, r);
-  float f = hitSphere(&spherePoint2, 0.5, r);
   if (t > 0.0){
     point* rayAt = at(r, t);
     vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
 
-    result->x = 0.5* (N->x+1);
-    result->y = 0.5* (N->x+1);
-    result->z = 0.5* (N->x+1);
-    return result;
-  }
-  if (f > 0.0){
-    point* rayAt = at(r, f);
-    vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
-
-    result->x = 0.5* (N->x+1);
-    result->y = 0.5* (N->x+1);
-    result->z = 0.5* (N->x+1);
+    result->x = spheres[0].color[0]* (N->x+1);
+    result->y = spheres[0].color[1]* (N->x+1);
+    result->z = spheres[0].color[2]* (N->x+1);
     return result;
   }
   result->x = background[0];
@@ -427,7 +416,7 @@ int main(int argc , char* argv[]){
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
-      color* pixel = rayColor(&r, background);
+      color* pixel = rayColor(&r, background, spheres);
       pixels[k] = pixel->x * 255.0;
       pixels[k+1] = pixel->y * 255.0;
       pixels[k+2] = pixel->z * 255.0;
