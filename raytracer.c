@@ -218,11 +218,11 @@ float hitSphere(point* center, float radius, ray* r) {
   float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
   float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
   float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
-  float disc = b*b - 4*a*c;
-  if (disc < 0) {
+  float d = b*b - 4*a*c;
+  if(d < 0){
     return -1.0;
-  } else {
-    return (-b-sqrt(disc))/(2.0*a);
+  }else{
+    return (-b-sqrt(d))/(2.0*a);
   }
 }
 
@@ -234,9 +234,9 @@ color* rayColor(ray* r){
     point* rayAt = at(r, t);
     vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
 
-    result->x = 0.5* N->x+1;
-    result->y = 0.5* N->x+1;
-    result->z = 0.5* N->x+1;
+    result->x = 0.5* (N->x+1);
+    result->y = 0.5* (N->x+1);
+    result->z = 0.5* (N->x+1);
     return result;
   }
   vec * unitDir = (vec*) malloc(sizeof(vec));
@@ -407,9 +407,9 @@ int main(int argc , char* argv[]){
   vec horizontal = {viewportWidth, 0, 0};
   vec vertical = {0, viewportHeight, 0};
   vec lowerLeft;
-  lowerLeft.x = origin.x - horizontal.x/2 - vertical.x/2 - 0;
-  lowerLeft.y = origin.y - horizontal.y/2 - vertical.y/2 - 0;
-  lowerLeft.z = origin.z - horizontal.z/2 - vertical.z/2 - focal;
+  lowerLeft.x = origin.x - horizontal.x/2.0 - vertical.x/2.0 - 0;
+  lowerLeft.y = origin.y - horizontal.y/2.0 - vertical.y/2.0 - 0;
+  lowerLeft.z = origin.z - horizontal.z/2.0 - vertical.z/2.0 - focal;
 
   int k = 0;
   for (int j = res[1]-1; j >= 0; --j) {
