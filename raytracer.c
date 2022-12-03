@@ -396,9 +396,7 @@ int main(int argc , char* argv[]){
   unsigned char px[3*res[0]*res[1]];
   pixels = px;
 
-  float aspectRatio = 16.0/9.0;
-  res[0] = 400;
-  res[1] = (float)(res[0])/aspectRatio;
+  float aspectRatio = (float)(res[0])/(float)(res[1]);
   float viewportHeight = 2.0;
   float viewportWidth = aspectRatio * viewportHeight;
   float focal = 1.0;
