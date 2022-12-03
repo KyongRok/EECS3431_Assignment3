@@ -214,10 +214,17 @@ point* at(ray* r, float t){
 }
 
 color* rayColor(ray* r){
+  color * result = (color*) malloc(sizeof(color));
+  point spherePoint = {0, 0, -1};
+  if (hitSphere(&spherePoint, 0.5, r)){
+    result->x = 1;
+    result->y = 0;
+    result->z = 0;
+    return result;
+  }
   vec * unitDir = (vec*) malloc(sizeof(vec));
   unitDir = unitVec(r->direction->x, r->direction->y, r->direction->z);
   float t = 0.5*(unitDir->y + 1.0);
-  color * result = (color*) malloc(sizeof(color));
   result->x = (1.0-t)*1.0 - t*0.5;
   result->y = (1.0-t)*1.0 - t*0.7;
   result->z = (1.0-t)*1.0 - t*1.0;
@@ -230,7 +237,7 @@ int hitSphere(point* center, float radius, ray* r) {
   float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
   float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
   float discriminant = b*b - 4*a*c;
-  return (discriminant > 0);
+  return (discriminant > 0.0);
 }
 
 int main(int argc , char* argv[]){
@@ -381,8 +388,8 @@ int main(int argc , char* argv[]){
   unsigned char px[3*res[0]*res[1]];
   pixels = px;
 
-  float aspectRatio = res[0]/res[1];
-  float viewportHeight = res[1];
+  float aspectRatio = (float)(res[0])/(res[1]);
+  float viewportHeight = (float)res[1];
   float viewportWidth = aspectRatio * viewportHeight;
   float focal = 1.0;
 
