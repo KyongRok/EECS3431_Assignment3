@@ -231,7 +231,7 @@ color* rayColor(ray* r, float background[]){
   point spherePoint = {0, 0, -1};
   point spherePoint2 = {0, 1, -1};
   float t = hitSphere(&spherePoint, 0.5, r);
-  float f = hitSphere(&spherePoint2, 0.25, r);
+  float f = hitSphere(&spherePoint2, 0.5, r);
   if (t > 0.0){
     point* rayAt = at(r, t);
     vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
