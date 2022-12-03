@@ -416,7 +416,7 @@ int main(int argc , char* argv[]){
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
-      color* pixel = rayColor(&r);
+      color* pixel = rayColor(&r, background);
       pixels[k] = pixel->x * 255.0;
       pixels[k+1] = pixel->y * 255.0;
       pixels[k+2] = pixel->z * 255.0;
@@ -424,18 +424,7 @@ int main(int argc , char* argv[]){
     }
   }
   
-  //create_background(&pixels, background, res[0], res[1]);
   save_imageP6(res[0], res[1], output_name, pixels);
-}
-
-void create_background(unsigned char** pixels , float background[], int width,int height){
-  unsigned char* temp_pixles = *pixels;
-  for(int i = 0; i < 3*width*height;){
-    temp_pixles[i] = (background[0]) * 255;
-    temp_pixles[i+1] =  (background[1]) * 255;
-    temp_pixles[i+2] = (background[2]) * 255;
-    i = i + 3;
-  }
 }
 
 
