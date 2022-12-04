@@ -262,15 +262,15 @@ int hitSphere(point* center, float radius1, float radius2, float radius3,ray* r,
   rec->normal = (vec*) malloc(sizeof(vec));
   rec->p = at(r, rec->t);
   vec * outNormal = (vec*) malloc(sizeof(vec));
-  outNormal -> x= (rec->p->x - center->x)*radius1;
-  outNormal -> y= (rec->p->y - center->y)*radius2;
-  outNormal -> z= (rec->p->z - center->z)*radius3;
+  outNormal -> x= (rec->p->x - center->x)/radius1;
+  outNormal -> y= (rec->p->y - center->y)/radius2;
+  outNormal -> z= (rec->p->z - center->z)/radius3;
   setFaceNormal(rec, r, outNormal);
   rec->c = colors;
 
-  rec->normal->x = (rec->p->x - center->x) *radius1;
-  rec->normal->y = (rec->p->y - center->y) * radius2;
-  rec->normal->z = (rec->p->z - center->z) *radius3;
+  rec->normal->x = (rec->p->x - center->x) /radius1;
+  rec->normal->y = (rec->p->y - center->y) /radius2;
+  rec->normal->z = (rec->p->z - center->z) /radius3;
   return 1;
 }
 
@@ -471,7 +471,7 @@ int main(int argc , char* argv[]){
   pixels = px;
 
   float aspectRatio = (float)(res[0])/(float)(res[1]);
-  float viewportHeight = 2.0;
+  float viewportHeight = 1.0;
   float viewportWidth = aspectRatio * viewportHeight;
   float focal = 1.0;
 
