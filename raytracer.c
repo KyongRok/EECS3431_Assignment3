@@ -303,7 +303,7 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
   color* result = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = 1000;
-  if (hitAll(spheres, sphereCount, r, 0, inf, rec, sphereCol)){
+  if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
     result->x = rec->c->x;
     result->y = rec->c->y;
     result->z = rec->c->z;
