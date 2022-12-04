@@ -13,6 +13,8 @@ struct hitRecord{
     point* p;
     vec* normal;
     float t;
+    int frontFace;
 };
 
 point* at(ray* r, float t);
+void setFaceNormal(hitRecord* h, ray* r, vec*outNorm);

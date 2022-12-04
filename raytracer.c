@@ -216,6 +216,18 @@ point* at(ray* r, float t){
   return result;
 }
 
+void setFaceNormal(hitRecord* h, ray* r, vec* outNorm){
+  h->frontFace = dotProduct(r->direction->x, r->direction->y, r->direction->z, outNorm->x, outNorm->y, outNorm->z) > 0;
+ if(h->frontFace){
+  h->normal = outNorm;
+ }else{
+  outNorm -> x = -(outNorm -> x);
+  outNorm -> y = -(outNorm -> y);
+  outNorm -> z = -(outNorm -> z);
+  h->normal = outNorm;
+ }
+}
+
 int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
@@ -237,6 +249,12 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   rec->p = (point*) malloc(sizeof(point));
   rec->normal = (vec*) malloc(sizeof(vec));
   rec->p = at(r, rec->t);
+  vec * outNormal = (vec*) malloc(sizeof(vec));
+  outNormal -> x= (rec->p->x - center->x)/radius;
+  outNormal -> y= (rec->p->y - center->y)/radius;
+  outNormal -> z= (rec->p->z - center->z)/radius;
+  setFaceNormal(rec, r, outNormal);
+
   rec->normal->x = (rec->p->x - center->x) / radius;
   rec->normal->y = (rec->p->y - center->y) / radius;
   rec->normal->z = (rec->p->z - center->z) / radius;
@@ -267,7 +285,7 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
 color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
   color* result = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
-  float inf = (float) INFINITY;
+  float inf = 1000;
   if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
     result->x = 0.5 * (rec->normal->x + 1);
     result->y = 0.5 * (rec->normal->y + 1);
@@ -279,6 +297,8 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
   result->z = background[2];
   return result;
 }
+
+
 
 int main(int argc , char* argv[]){
   float near;
