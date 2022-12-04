@@ -253,7 +253,7 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     center->x = spheres[i].position[0];
     center->y = spheres[i].position[1];
     center->z = spheres[i].position[2];
-    float radius = spheres[i].scale[0]/2.0;
+    float radius = 0.5;
     if(hitSphere(center, radius, r, tMax, tMin, rec)){
       hitAny = 1;
       closestSoFar = tempR->t;
