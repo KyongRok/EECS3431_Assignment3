@@ -258,7 +258,7 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   return 1;
 }
 
-int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float tMax, hitRecord* rec) {
+int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float tMax, hitRecord* rec, color* sphereCol) {
   hitRecord* tempR = (hitRecord*) malloc(sizeof(hitRecord));
   int hitAny = 0;
   float closestSoFar = tMax;
@@ -269,6 +269,9 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     center->y = spheres[i].position[1];
     center->z = spheres[i].position[2];
     float radius = spheres[i].scale[0];
+    sphereCol->x = spheres[i].color[0];
+    sphereCol->y = spheres[i].color[1];
+    sphereCol->z = spheres[i].color[2];
     if(hitSphere(center, radius, r, tMax, tMin, rec)){
       hitAny = 1;
       closestSoFar = tempR->t;
@@ -281,12 +284,13 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
 
 color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
   color* result = (color*) malloc(sizeof(color));
+  color* sphereCol = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = 1000;
-  if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
-    result->x = 0.5 * (rec->normal->x + 1);
-    result->y = 0.5 * (rec->normal->y + 1);
-    result->z = 0.5 * (rec->normal->z + 1);
+  if (hitAll(spheres, sphereCount, r, 0, inf, rec, sphereCol)){
+    result->x = sphereCol->x;
+    result->y = sphereCol->y;
+    result->z = sphereCol->z;
     return result;
   }
   result->x = background[0];
