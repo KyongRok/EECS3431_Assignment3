@@ -233,9 +233,9 @@ vec* randomUnitS() {
   while (1) {
     srand(time(0)); 
     vec* p = (point*) malloc(sizeof(point));
-    p -> x = ((float) (rand() % 2))-1;
-    p -> y = ((float) (rand() % 2))-1;
-    p -> z = ((float) (rand() % 2))-1;
+    p -> x = (float) (rand() % 2)-1;
+    p -> y = (float) (rand() % 2)-1;
+    p -> z = (float) (rand() % 2)-1;
     if(vecLengthSquared(p->x, p->y, p->z) >= 1){
       continue;
     } 
@@ -294,30 +294,15 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
   return hitAny;
 }
 
-color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount, int depth){
+color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
   color* result = (color*) malloc(sizeof(color));
   color* sphereCol = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = 1000;
-  if (depth <= 0){
-    result->x = 0;
-    result->y = 0;
-    result->z = 0;
-  }
-
-
   if (hitAll(spheres, sphereCount, r, 0, inf, rec, sphereCol)){
-    point* target = (point*) malloc(sizeof(point));
-    target->x = rec->p->x + rec->normal->x + randomUnitS()->x - rec->p->x;
-    target->y = rec->p->y + rec->normal->y + randomUnitS()->y - rec->p->y;
-    target->z = rec->p->z + rec->normal->z + randomUnitS()->z - rec->p->z;
-    color* rayC = (color*) malloc(sizeof(color));
-    ray r1 = {rec->p, target};
-    rayC = rayColor(&r1, background, spheres, sphereCount, depth - 1);
-
-    result->x = sphereCol->x + rayC->x;
-    result->y = sphereCol->y + rayC->x;
-    result->z = sphereCol->z + rayC->x;
+    result->x = sphereCol->x;
+    result->y = sphereCol->y;
+    result->z = sphereCol->z;
     return result;
   }
   result->x = background[0];
@@ -502,7 +487,7 @@ int main(int argc , char* argv[]){
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
-      color* pixel = rayColor(&r, background, spheres, sphere_counter, (int)(spheres[0].k[1]));
+      color* pixel = rayColor(&r, background, spheres, sphere_counter);
       pixels[k] = pixel->x * 255.0;
       pixels[k+1] = pixel->y * 255.0;
       pixels[k+2] = pixel->z * 255.0;
