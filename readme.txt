@@ -7,7 +7,9 @@ No external libraries has been used in this project.
 
 ** Build/MakeFile **
 For linux/Mac OS, go to command line and navigate to directory of the file and type "make" to build the executable file
-and a execuatable file named raytracer will be produced.
+and a execuatable file named raytracer.exe will be produced. Then within the command line, execute raytracer.exe with 
+the appropriate txt file as the single argument
+Example: raytracer.exe testExample.txt
 
 For Windows
 
