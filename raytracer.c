@@ -269,9 +269,9 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = (float) INFINITY;
   if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
-    result->x = spheres[0].color[0] * rec -> normal -> x;
-    result->y = spheres[0].color[1] * rec -> normal -> y;
-    result->z = spheres[0].color[2] * rec -> normal -> z;
+    result->x = spheres[0].color[0];
+    result->y = spheres[0].color[1];
+    result->z = spheres[0].color[2];
     return result;
   }
   result->x = background[0];
