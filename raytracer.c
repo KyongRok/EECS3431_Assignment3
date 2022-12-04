@@ -294,11 +294,18 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
   return hitAny;
 }
 
-color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
+color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount, int depth){
   color* result = (color*) malloc(sizeof(color));
   color* sphereCol = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = 1000;
+  if (depth <= 0){
+    result->x = 0;
+    result->y = 0;
+    result->z = 0;
+  }
+
+
   if (hitAll(spheres, sphereCount, r, 0, inf, rec, sphereCol)){
     point* target = (point*) malloc(sizeof(point));
     target->x = rec->p->x + rec->normal->x + randomUnitS()->x - rec->p->x;
@@ -306,7 +313,7 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
     target->z = rec->p->z + rec->normal->z + randomUnitS()->z - rec->p->z;
     color* rayC = (color*) malloc(sizeof(color));
     ray r1 = {rec->p, target};
-    rayC = rayColor(&r1, background, spheres, sphereCount);
+    rayC = rayColor(&r1, background, spheres, sphereCount, depth - 1);
 
     result->x = sphereCol->x + rayC->x;
     result->y = sphereCol->y + rayC->x;
@@ -495,7 +502,7 @@ int main(int argc , char* argv[]){
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
-      color* pixel = rayColor(&r, background, spheres, sphere_counter);
+      color* pixel = rayColor(&r, background, spheres, sphere_counter, (int)(spheres[0].k[1]));
       pixels[k] = pixel->x * 255.0;
       pixels[k+1] = pixel->y * 255.0;
       pixels[k+2] = pixel->z * 255.0;
