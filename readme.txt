@@ -6,7 +6,7 @@ header files, ray.h raytracer.h vector.h contains the definitions of struct data
 No external libraries has been used in this project.
 
 ** Build/MakeFile **
-For linux, go to command line and navigate to directory of the file and type "make" to build the executable file
+For linux/Mac OS, go to command line and navigate to directory of the file and type "make" to build the executable file
 and a execuatable file named raytracer will be produced.
 
 For Windows
