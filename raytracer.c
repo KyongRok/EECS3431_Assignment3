@@ -233,9 +233,9 @@ vec* randomUnitS() {
   while (1) {
     srand(time(0)); 
     vec* p = (point*) malloc(sizeof(point));
-    p -> x = ((float) rand() % 2)-1;
-    p -> y = ((float) rand() % 2)-1;
-    p -> z = ((float) rand() % 2)-1;
+    p -> x = (float) (rand() % 2)-1;
+    p -> y = (float) (rand() % 2)-1;
+    p -> z = (float) (rand() % 2)-1;
     if(vecLengthSquared(p->x, p->y, p->z) >= 1){
       continue;
     } 
