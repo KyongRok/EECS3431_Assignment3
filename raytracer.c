@@ -255,7 +255,7 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   float sd = sqrt(d);
   float root = (-b2 - sd)/a;
   if(root < tMin || tMax < root){
-    root = (-b2 + sd) / a;
+    //root = (-b2 + sd) / a;
   }
   rec->t = root;
   rec->p = (point*) malloc(sizeof(point));
@@ -302,8 +302,8 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
 color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
   color* result = (color*) malloc(sizeof(color));
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
-  float inf = 1000;
-  if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
+  float inf = 100000;
+  if (hitAll(spheres, sphereCount, r, 0.0001, inf, rec)){
     result->x = rec->c->x;
     result->y = rec->c->y;
     result->z = rec->c->z;
