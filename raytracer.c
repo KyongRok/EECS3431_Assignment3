@@ -241,9 +241,6 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   float root = (-b2 - sd)/a;
   if(root < tMin || tMax < root){
     root = (-b2 + sd) / a;
-    if(root < tMin || tMax < root){
-      return 0;
-    }
   }
   rec->t = root;
   rec->p = (point*) malloc(sizeof(point));
@@ -297,7 +294,6 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
   result->z = background[2];
   return result;
 }
-
 
 
 int main(int argc , char* argv[]){
