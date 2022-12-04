@@ -243,7 +243,7 @@ vec* randomUnitS() {
   }
 }
 
-int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec) {
+int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec, color* colors) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
   float b2 = dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
@@ -266,6 +266,7 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   outNormal -> y= (rec->p->y - center->y)/radius;
   outNormal -> z= (rec->p->z - center->z)/radius;
   setFaceNormal(rec, r, outNormal);
+  rec->c = colors;
 
   rec->normal->x = (rec->p->x - center->x) / radius;
   rec->normal->y = (rec->p->y - center->y) / radius;
@@ -284,7 +285,7 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     center->y = spheres[i].position[1];
     center->z = spheres[i].position[2];
     float radius = spheres[i].scale[0];
-    if(hitSphere(center, radius, r, tMax, tMin, rec)){
+    if(hitSphere(center, radius, r, tMax, tMin, rec, sphereCol)){
       hitAny = 1;
       closestSoFar = tempR->t;
       rec = tempR;
@@ -300,9 +301,9 @@ color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereC
   hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
   float inf = 1000;
   if (hitAll(spheres, sphereCount, r, 0, inf, rec, sphereCol)){
-    result->x = sphereCol->x;
-    result->y = sphereCol->y;
-    result->z = sphereCol->z;
+    result->x = rec->c->x;
+    result->y = rec->c->y;
+    result->z = rec->c->z;
     return result;
   }
   result->x = background[0];

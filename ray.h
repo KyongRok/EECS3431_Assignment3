@@ -14,6 +14,7 @@ struct hitRecord{
     vec* normal;
     float t;
     int frontFace;
+    color* c;
 };
 
 point* at(ray* r, float t);
