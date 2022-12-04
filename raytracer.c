@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "raytracer.h"
 #include "vector.h"
 #include "ray.h"
@@ -228,6 +229,20 @@ void setFaceNormal(hitRecord* h, ray* r, vec* outNorm){
  }
 }
 
+vec* randomUnitS() {
+  while (1) {
+    srand(time(0)); 
+    vec* p = (point*) malloc(sizeof(point));
+    p -> x = ((float) rand() % 2)-1;
+    p -> y = ((float) rand() % 2)-1;
+    p -> z = ((float) rand() % 2)-1;
+    if(vecLengthSquared(p->x, p->y, p->z) >= 1){
+      continue;
+    } 
+    return p;
+  }
+}
+
 int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
@@ -269,9 +284,6 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     center->y = spheres[i].position[1];
     center->z = spheres[i].position[2];
     float radius = spheres[i].scale[0];
-    sphereCol->x = spheres[i].color[0];
-    sphereCol->y = spheres[i].color[1];
-    sphereCol->z = spheres[i].color[2];
     if(hitSphere(center, radius, r, tMax, tMin, rec)){
       hitAny = 1;
       closestSoFar = tempR->t;
