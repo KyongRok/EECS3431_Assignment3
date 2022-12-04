@@ -243,11 +243,11 @@ vec* randomUnitS() {
   }
 }
 
-int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec, color* colors) {
+int hitSphere(point* center, float radius1, float radius2, float radius3,ray* r, float tMin, float tMax, hitRecord* rec, color* colors) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
   float b2 = dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
-  float c = vecLengthSquared(oc.x,oc.y,oc.z) - radius*radius;
+  float c = vecLengthSquared(oc.x,oc.y,oc.z) - radius1*radius2;
   float d = b2*b2 - a*c;
   if(d < 0){
     return 0;
@@ -262,15 +262,15 @@ int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRe
   rec->normal = (vec*) malloc(sizeof(vec));
   rec->p = at(r, rec->t);
   vec * outNormal = (vec*) malloc(sizeof(vec));
-  outNormal -> x= (rec->p->x - center->x)/radius;
-  outNormal -> y= (rec->p->y - center->y)/radius;
-  outNormal -> z= (rec->p->z - center->z)/radius;
+  outNormal -> x= (rec->p->x - center->x)/radius1;
+  outNormal -> y= (rec->p->y - center->y)/radius2;
+  outNormal -> z= (rec->p->z - center->z)/radius3;
   setFaceNormal(rec, r, outNormal);
   rec->c = colors;
 
-  rec->normal->x = (rec->p->x - center->x) / radius;
-  rec->normal->y = (rec->p->y - center->y) / radius;
-  rec->normal->z = (rec->p->z - center->z) / radius;
+  rec->normal->x = (rec->p->x - center->x) / radius1;
+  rec->normal->y = (rec->p->y - center->y) / radius2;
+  rec->normal->z = (rec->p->z - center->z) / radius3;
   return 1;
 }
 
@@ -288,8 +288,10 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     col->x = spheres[i].color[0];
     col->y = spheres[i].color[1];
     col->z = spheres[i].color[2];
-    float radius = spheres[i].scale[0];
-    if(hitSphere(center, radius, r, tMax, tMin, rec, col)){
+    float ra1 = spheres[i].scale[0];
+    float ra2 = spheres[i].scale[1];
+    float ra3 = spheres[i].scale[2];
+    if(hitSphere(center, ra1, ra2, ra3, r, tMax, tMin, rec, col)){
       hitAny = 1;
       closestSoFar = tempR->t;
       rec = tempR;
