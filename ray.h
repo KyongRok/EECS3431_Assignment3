@@ -12,7 +12,7 @@ struct ray{
 struct hitRecord{
     point* p;
     vec* normal;
-    double t;
+    float t;
 };
 
 point* at(ray* r, float t);

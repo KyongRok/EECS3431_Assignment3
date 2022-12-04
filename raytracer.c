@@ -191,6 +191,9 @@ float dotProduct(float x1, float y1,float z1, float x2, float y2, float z2){
 float vecLength(float x1, float y1,float z1){
   return sqrt(x1*x1 + y1*y1+ z1*z1);
 }
+float vecLengthSquared(float x1, float y1,float z1){
+  return x1*x1 + y1*y1+ z1*z1;
+}
 vec* crossProduct(float x1, float y1,float z1, float x2, float y2, float z2){
   vec * result = (vec*) malloc(sizeof(vec));
   result->x = y1*z2 - z1*y2;
@@ -213,30 +216,62 @@ point* at(ray* r, float t){
   return result;
 }
 
-float hitSphere(point* center, float radius, ray* r) {
+int hitSphere(point* center, float radius, ray* r, float tMax, float tMin, hitRecord* rec) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
-  float a = dotProduct(r->direction->x, r->direction->y, r->direction->z, r->direction->x, r->direction->y, r->direction->z);
-  float b = 2.0 * dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
-  float c = dotProduct(oc.x,oc.y,oc.z, oc.x,oc.y,oc.z) - radius*radius;
-  float d = b*b - 4*a*c;
+  float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
+  float b2 = dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
+  float c = vecLengthSquared(oc.x,oc.y,oc.z) - radius*radius;
+  float d = b2*b2 - a*c;
   if(d < 0){
-    return -1.0;
-  }else{
-    return (-b-sqrt(d))/(2.0*a);
+    return 0;
   }
+  float sd = sqrt(d);
+  float root = (-b2 - sd)/a;
+  if(root < tMin || tMax < root){
+    root = (-b2 + sd) / a;
+    if(root < tMin || tMax < root){
+      return 0;
+    }
+  }
+  rec->t = root;
+  rec->p = (point*) malloc(sizeof(point));
+  rec->normal = (vec*) malloc(sizeof(vec));
+  rec->p = at(r, rec->t);
+  rec->normal->x = (rec->p->x - center->x) / radius;
+  rec->normal->y = (rec->p->y - center->y) / radius;
+  rec->normal->z = (rec->p->z - center->z) / radius;
+  return 1;
 }
 
-color* rayColor(ray* r, float background[], struct sphere spheres[]){
-  color* result = (color*) malloc(sizeof(color));
-  point spherePoint = {spheres[0].position[0], spheres[0].position[1], spheres[0].position[2]};
-  float t = hitSphere(&spherePoint, 0.5, r);
-  if (t > 0.0){
-    point* rayAt = at(r, t);
-    vec* N = unitVec(rayAt->x - 0, rayAt->y - 0, rayAt->z + 1); 
+int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMax, float tMin, hitRecord* rec) {
+  hitRecord* tempR = (hitRecord*) malloc(sizeof(hitRecord));
+  int hitAny = 0;
+  float closestSoFar = tMax;
 
-    result->x = spheres[0].color[0]* (N->x+1);
-    result->y = spheres[0].color[1]* (N->x+1);
-    result->z = spheres[0].color[2]* (N->x+1);
+  for(int i = 0; i < sphereCount; i++){
+    point* center = (point*) malloc(sizeof(point));
+    center->x = spheres[i].position[0];
+    center->y = spheres[i].position[1];
+    center->z = spheres[i].position[2];
+    float radius = spheres[i].scale[0]/2.0;
+    if(hitSphere(center, radius, r, tMax, tMin, rec)){
+      hitAny = 1;
+      closestSoFar = tempR->t;
+      rec = tempR;
+    }
+  }
+
+  return hitAny;
+}
+
+color* rayColor(ray* r, float background[], struct sphere spheres[], int sphereCount){
+  color* result = (color*) malloc(sizeof(color));
+  hitRecord* rec = (hitRecord*) malloc(sizeof(hitRecord));
+  float inf = (float) INFINITY;
+  if (hitAll(spheres, sphereCount, r, 0, inf, rec)){
+    result->x = spheres[0].color[0] * rec -> normal -> x;
+    result->y = spheres[0].color[1] * rec -> normal -> y;
+    result->z = spheres[0].color[2] * rec -> normal -> z;
     return result;
   }
   result->x = background[0];
@@ -420,7 +455,7 @@ int main(int argc , char* argv[]){
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
       dir.z = lowerLeft.z + u*horizontal.z + v*vertical.z - origin.z;
       ray r = {&origin, &dir};
-      color* pixel = rayColor(&r, background, spheres);
+      color* pixel = rayColor(&r, background, spheres, sphere_counter);
       pixels[k] = pixel->x * 255.0;
       pixels[k+1] = pixel->y * 255.0;
       pixels[k+2] = pixel->z * 255.0;
