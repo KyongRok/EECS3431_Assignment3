@@ -11,7 +11,10 @@ and a execuatable file named raytracer.exe will be produced. Then within the com
 the appropriate txt file as the single argument
 Example: raytracer.exe testExample.txt
 
-For Windows
+For Windows, we were not able to generate MS VS build, hence please go to command line and navigate to the directory
+and use the command gcc -o raytracer.exe raytracer.c -lm to compile c and create execuatable named raytracer.exe
+then execute raytracer.exe with the appropriate txt file as the single argument
+Example: raytracer.exe testExample.txt
 
 
 ** Report of Tests **
