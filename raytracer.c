@@ -288,9 +288,9 @@ int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float t
     col->x = spheres[i].color[0];
     col->y = spheres[i].color[1];
     col->z = spheres[i].color[2];
-    float ra1 = spheres[i].scale[0]/(2.0);
-    float ra2 = spheres[i].scale[1]/(2.0);
-    float ra3 = spheres[i].scale[2]/(2.0);
+    float ra1 = spheres[i].scale[0]/(1.0);
+    float ra2 = spheres[i].scale[1]/(1.0);
+    float ra3 = spheres[i].scale[2]/(1.0);
     if(hitSphere(center, ra1, ra2, ra3, r, tMax, tMin, rec, col)){
       hitAny = 1;
       closestSoFar = tempR->t;
@@ -473,7 +473,7 @@ int main(int argc , char* argv[]){
   float aspectRatio = (float)(res[0])/(float)(res[1]);
   float viewportHeight = 1.0;
   float viewportWidth = aspectRatio * viewportHeight;
-  float focal = 1.0;
+  float focal = 0.5;
 
   point origin = {0.0, 0.0, 0.0};
   vec horizontal = {viewportWidth, 0, 0};
