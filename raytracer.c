@@ -216,7 +216,7 @@ point* at(ray* r, float t){
   return result;
 }
 
-int hitSphere(point* center, float radius, ray* r, float tMax, float tMin, hitRecord* rec) {
+int hitSphere(point* center, float radius, ray* r, float tMin, float tMax, hitRecord* rec) {
   vec oc = {r->origin->x - center->x, r->origin->y - center->y, r->origin->z - center->z};
   float a = vecLengthSquared(r->direction->x, r->direction->y, r->direction->z);
   float b2 = dotProduct(oc.x,oc.y,oc.z, r->direction->x, r->direction->y, r->direction->z);
@@ -243,7 +243,7 @@ int hitSphere(point* center, float radius, ray* r, float tMax, float tMin, hitRe
   return 1;
 }
 
-int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMax, float tMin, hitRecord* rec) {
+int hitAll(struct sphere spheres[], int sphereCount, ray* r, float tMin, float tMax, hitRecord* rec) {
   hitRecord* tempR = (hitRecord*) malloc(sizeof(hitRecord));
   int hitAny = 0;
   float closestSoFar = tMax;
