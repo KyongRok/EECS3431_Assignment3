@@ -486,8 +486,8 @@ int main(int argc , char* argv[]){
   int k = 0;
   for (int j = res[1]-1; j >= 0; --j) {
     for (int i = 0; i < res[0]; ++i) {
-      float u = (float)(i) / (res[0]);
-      float v = (float)(j) / (res[1]);
+      float u = (float)(i) / (res[0]-1);
+      float v = (float)(j) / (res[1]-1);
       vec dir;
       dir.x = lowerLeft.x + u*horizontal.x + v*vertical.x - origin.x;
       dir.y = lowerLeft.y + u*horizontal.y + v*vertical.y - origin.y;
